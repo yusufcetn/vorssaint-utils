@@ -101,7 +101,26 @@ final class UpdateService: ObservableObject {
 
     // MARK: - Check
 
+    /// This fork takes updates from the original project's commits through a
+    /// script in Terminal, so "Check now" runs it and nothing polls a feed.
+    private static let syncsFromUpstream = true
+
+    private func syncFromUpstream() {
+        let script = URL(fileURLWithPath: NSHomeDirectory() + "/vorssaint-utils/Tools/update-from-upstream.sh")
+        guard FileManager.default.isExecutableFile(atPath: script.path),
+              let terminal = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Terminal") else {
+            state = .failed(script.path)
+            return
+        }
+        NSWorkspace.shared.open([script], withApplicationAt: terminal, configuration: NSWorkspace.OpenConfiguration())
+        lastChecked = Date()
+    }
+
     func check(manual: Bool) {
+        if Self.syncsFromUpstream {
+            if manual { syncFromUpstream() }
+            return
+        }
         if AppInfo.isDeveloperBuild {
             // No real update target; reflect the simulation default so the
             // notification UI can be exercised locally.

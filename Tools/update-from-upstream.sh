@@ -24,3 +24,8 @@ fi
 
 git push origin "$OWN_BRANCH" || echo "Push skipped." >&2
 ./build.sh --install
+
+# The running copy still holds the old binary; start the new one.
+osascript -e 'tell application id "com.vorssaint.utils" to quit' 2>/dev/null || true
+sleep 2
+open /Applications/Vorssaint.app
