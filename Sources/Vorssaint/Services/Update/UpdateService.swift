@@ -27,7 +27,9 @@ final class UpdateService: ObservableObject {
     /// preview. Set alongside `.available`; cleared otherwise.
     @Published private(set) var availableNotes: String?
 
-    private let repository = "vorssaint/vorssaint-utils"
+    // This fork publishes no releases: updates arrive through
+    // Tools/update-from-upstream.sh, so the official feed must not overwrite it.
+    private let repository = "yusufcetn/vorssaint-utils"
     private var downloadURL: URL?
     /// Size the release advertises for the asset, used to bound the download.
     private var downloadExpectedBytes: Int64?
